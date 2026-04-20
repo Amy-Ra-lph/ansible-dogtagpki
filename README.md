@@ -42,9 +42,26 @@ ansible-vault encrypt group_vars/pki_servers/vault.yml
 ansible-playbook site.yml --ask-vault-pass
 ```
 
+## LDAPS Configuration
+
+By default, the CA role provisions 389 DS with LDAPS enabled (port 636) and configures pkispawn to use the secure connection. The DS instance generates a self-signed server certificate during setup.
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `dogtag_ds_port` | `389` | LDAP plaintext port |
+| `dogtag_ds_secure_port` | `636` | LDAPS port |
+| `dogtag_ds_secure_connection` | `true` | Use LDAPS for CA-to-DS connection |
+
+To disable LDAPS (e.g., for local testing):
+
+```yaml
+dogtag_ds_secure_connection: false
+```
+
 ## Security Notes
 
 - All passwords are stored in Ansible Vault (never in plaintext)
 - Passwords are passed to commands via temporary files (not shell arguments)
 - Sensitive tasks use `no_log: true`
+- LDAPS enabled by default (addresses security finding #18)
 - See [SECURITY.md](https://github.com/Amy-Ra-lph/dogtag-webui/blob/main/SECURITY.md) in the WebUI repo for the full audit
